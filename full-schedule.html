@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0eb;
+  --card: #fffef9;
+  --border: #e8e0d5;
+  --text: #1a1510;
+  --muted: #8a7d6e;
+
+  --prayer: #2d6a4f;
+  --prayer-bg: #d8f3dc;
+  --prayer-border: #b7e4c7;
+
+  --class: #1d3557;
+  --class-bg: #dde8f5;
+  --class-border: #a8c4e3;
+
+  --lab: #6a0572;
+  --lab-bg: #f3d8f5;
+  --lab-border: #d9a8dc;
+
+  --study: #7b4e2d;
+  --study-bg: #fde8d5;
+  --study-border: #f5c49a;
+
+  --meal: #9b2335;
+  --meal-bg: #fdd9dd;
+  --meal-border: #f5aab2;
+
+  --sleep: #2c3e6b;
+  --sleep-bg: #d8dff5;
+  --sleep-border: #a8b4e3;
+
+  --free: #5a5a5a;
+  --free-bg: #efefef;
+  --free-border: #d0d0d0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Outfit', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  padding: 32px 20px 60px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+header h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+header p {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 6px;
+  font-weight: 400;
+}
+
+.prayer-times-bar {
+  background: var(--prayer-bg);
+  border: 1px solid var(--prayer-border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto 36px;
+}
+
+.prayer-time-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.prayer-time-item .name {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--prayer);
+}
+
+.prayer-time-item .time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 32px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  border-radius: 40px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: all 0.18s ease;
+}
+
+.tab-btn:hover {
+  border-color: #c0b0a0;
+  color: var(--text);
+}
+
+.tab-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.day-view {
+  display: none;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.day-view.active {
+  display: block;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 80px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 60px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.block {
+  position: relative;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  padding: 11px 14px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: transform 0.15s ease;
+}
+
+.block:hover { transform: translateX(3px); }
+
+.block-time {
+  position: absolute;
+  left: -78px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: right;
+  width: 64px;
+  line-height: 1.3;
+}
+
+.block-dot {
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.block-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.block-content { flex: 1; }
+
+.block-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.block-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+/* Type styles */
+.block.prayer { background: var(--prayer-bg); border-color: var(--prayer-border); }
+.block.prayer .block-dot { background: var(--prayer); }
+.block.prayer .block-title { color: var(--prayer); }
+
+.block.class-t { background: var(--class-bg); border-color: var(--class-border); }
+.block.class-t .block-dot { background: var(--class); }
+
+.block.lab { background: var(--lab-bg); border-color: var(--lab-border); }
+.block.lab .block-dot { background: var(--lab); }
+
+.block.study { background: var(--study-bg); border-color: var(--study-border); }
+.block.study .block-dot { background: var(--study); }
+
+.block.meal { background: var(--meal-bg); border-color: var(--meal-border); }
+.block.meal .block-dot { background: var(--meal); }
+
+.block.sleep { background: var(--sleep-bg); border-color: var(--sleep-border); }
+.block.sleep .block-dot { background: var(--sleep); }
+
+.block.free { background: var(--free-bg); border-color: var(--free-border); }
+.block.free .block-dot { background: var(--free); }
+
+.day-summary {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.summary-chip {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 580px) {
+  .timeline { padding-left: 64px; }
+  .timeline::before { left: 46px; }
+  .block-time { left: -62px; width: 50px; font-size: 0.55rem; }
+  .block-dot { left: -8px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>My Daily Planner</h1>
+  <p>Full schedule · Classes + Prayers + Meals + Study + Sleep · Lahore, PK</p>
+</header>
+
+<!-- Prayer Times Bar -->
+<div class="prayer-times-bar">
+  <div class="prayer-time-item"><span class="name">🌙 Fajr</span><span class="time">5:07 AM</span></div>
+  <div class="prayer-time-item"><span class="name">☀️ Zuhr</span><span class="time">12:15 PM</span></div>
+  <div class="prayer-time-item"><span class="name">🌤 Asr</span><span class="time">4:22 PM</span></div>
+  <div class="prayer-time-item"><span class="name">🌅 Maghrib</span><span class="time">6:02 PM</span></div>
+  <div class="prayer-time-item"><span class="name">🌃 Isha</span><span class="time">7:23 PM</span></div>
+  <div class="prayer-time-item"><span class="name">📍 Location</span><span class="time">Lahore</span></div>
+</div>
+
+<!-- Legend -->
+<div class="legend" style="margin-bottom:24px">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--prayer)"></div>Prayer</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--class)"></div>Theory Class</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--lab)"></div>Lab</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--study)"></div>Study Time</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--meal)"></div>Meal</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--sleep)"></div>Sleep</div>
+</div>
+
+<!-- Day Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showDay('monday', this)">Monday</button>
+  <button class="tab-btn" onclick="showDay('tuesday', this)">Tuesday</button>
+  <button class="tab-btn" onclick="showDay('wednesday', this)">Wednesday</button>
+  <button class="tab-btn" onclick="showDay('thursday', this)">Thursday</button>
+  <button class="tab-btn" onclick="showDay('friday', this)">Friday</button>
+  <button class="tab-btn" onclick="showDay('weekend', this)">Weekend</button>
+</div>
+
+<!-- ========== MONDAY ========== -->
+<div class="day-view active" id="monday">
+  <div class="day-summary">
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Wake 4:00 AM</span>
+    <span class="summary-chip" style="background:var(--prayer-bg);color:var(--prayer)">5 Prayers</span>
+    <span class="summary-chip" style="background:var(--lab-bg);color:var(--lab)">4 Labs</span>
+    <span class="summary-chip" style="background:var(--class-bg);color:var(--class)">2 Theory</span>
+    <span class="summary-chip" style="background:var(--study-bg);color:var(--study)">Study Slots</span>
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Sleep 9:30 PM</span>
+  </div>
+  <div class="timeline">
+    <div class="block sleep"><div class="block-time">4:00 AM</div><div class="block-dot"></div><span class="block-icon">⏰</span><div class="block-content"><div class="block-title">Wake Up</div><div class="block-sub">Freshen up · Tahajjud (optional)</div></div></div>
+    <div class="block meal"><div class="block-time">4:15 AM</div><div class="block-dot"></div><span class="block-icon">🍳</span><div class="block-content"><div class="block-title">Breakfast</div><div class="block-sub">4:15 – 4:45 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">5:07 AM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Fajr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">5:25 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Morning Study</div><div class="block-sub">5:25 – 7:45 AM · Best focus time — revise lectures</div></div></div>
+    <div class="block free"><div class="block-time">7:45 AM</div><div class="block-dot"></div><span class="block-icon">🎒</span><div class="block-content"><div class="block-title">Get Ready & Commute</div><div class="block-sub">7:45 – 8:00 AM</div></div></div>
+    <div class="block lab"><div class="block-time">8:00 AM</div><div class="block-dot"></div><span class="block-icon">💻</span><div class="block-content"><div class="block-title">Computer Networks Lab</div><div class="block-sub">8:00 – 9:15 AM · CC251L · Faheem Subhani · SST1-308</div></div></div>
+    <div class="block lab"><div class="block-time">9:30 AM</div><div class="block-dot"></div><span class="block-icon">💻</span><div class="block-content"><div class="block-title">Computer Networks Lab</div><div class="block-sub">9:30 – 10:45 AM · CC251L · Faheem Subhani · SST1-308</div></div></div>
+    <div class="block study"><div class="block-time">11:00 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study Break</div><div class="block-sub">11:00 – 12:00 PM · Review CN lab work</div></div></div>
+    <div class="block prayer"><div class="block-time">12:15 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Zuhr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block meal"><div class="block-time">12:30 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch Break</div><div class="block-sub">12:30 – 12:30 PM — before class</div></div></div>
+    <div class="block class-t"><div class="block-time">12:30 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Software Req. Engineering</div><div class="block-sub">12:30 – 1:45 PM · SE282 · Halima Jamil</div></div></div>
+    <div class="block meal"><div class="block-time">1:45 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch</div><div class="block-sub">1:45 – 2:00 PM</div></div></div>
+    <div class="block lab"><div class="block-time">2:00 PM</div><div class="block-dot"></div><span class="block-icon">🗄️</span><div class="block-content"><div class="block-title">Database Systems Lab</div><div class="block-sub">2:00 – 3:15 PM · CC230L · Sameer Ahmed</div></div></div>
+    <div class="block lab"><div class="block-time">3:30 PM</div><div class="block-dot"></div><span class="block-icon">🗄️</span><div class="block-content"><div class="block-title">Database Systems Lab</div><div class="block-sub">3:30 – 4:45 PM · CC230L · Sameer Ahmed</div></div></div>
+    <div class="block prayer"><div class="block-time">4:22 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Asr Prayer</div><div class="block-sub">Offer during DB lab break or right after 4:45 PM</div></div></div>
+    <div class="block class-t"><div class="block-time">5:00 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Comp. Organization & Assembly</div><div class="block-sub">5:00 – 6:15 PM · CC222 · Dr. Aaqif Abbasi</div></div></div>
+    <div class="block prayer"><div class="block-time">6:02 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Maghrib Prayer</div><div class="block-sub">Offer right after class ends at 6:15 PM</div></div></div>
+    <div class="block meal"><div class="block-time">6:30 PM</div><div class="block-dot"></div><span class="block-icon">🍛</span><div class="block-content"><div class="block-title">Dinner</div><div class="block-sub">6:30 – 7:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">7:23 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Isha Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">7:40 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Evening Study</div><div class="block-sub">7:40 – 9:15 PM · Assignments / next day prep</div></div></div>
+    <div class="block sleep"><div class="block-time">9:30 PM</div><div class="block-dot"></div><span class="block-icon">🌙</span><div class="block-content"><div class="block-title">Sleep</div><div class="block-sub">9:30 PM – 4:00 AM · 6.5 hrs</div></div></div>
+  </div>
+</div>
+
+<!-- ========== TUESDAY ========== -->
+<div class="day-view" id="tuesday">
+  <div class="day-summary">
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Wake 4:00 AM</span>
+    <span class="summary-chip" style="background:var(--prayer-bg);color:var(--prayer)">5 Prayers</span>
+    <span class="summary-chip" style="background:var(--class-bg);color:var(--class)">2 Theory</span>
+    <span class="summary-chip" style="background:var(--study-bg);color:var(--study)">Heavy Study Day</span>
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Sleep 9:30 PM</span>
+  </div>
+  <div class="timeline">
+    <div class="block sleep"><div class="block-time">4:00 AM</div><div class="block-dot"></div><span class="block-icon">⏰</span><div class="block-content"><div class="block-title">Wake Up</div><div class="block-sub">Freshen up · Tahajjud (optional)</div></div></div>
+    <div class="block meal"><div class="block-time">4:15 AM</div><div class="block-dot"></div><span class="block-icon">🍳</span><div class="block-content"><div class="block-title">Breakfast</div><div class="block-sub">4:15 – 4:45 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">5:07 AM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Fajr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">5:25 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Morning Study</div><div class="block-sub">5:25 – 10:45 AM · Long study block — DB Systems, COA prep</div></div></div>
+    <div class="block free"><div class="block-time">10:45 AM</div><div class="block-dot"></div><span class="block-icon">🎒</span><div class="block-content"><div class="block-title">Get Ready & Commute</div><div class="block-sub">10:45 – 11:00 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">12:15 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Zuhr Prayer</div><div class="block-sub">~15 min · Between campus activities</div></div></div>
+    <div class="block meal"><div class="block-time">12:30 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch</div><div class="block-sub">12:30 – 1:15 PM</div></div></div>
+    <div class="block study"><div class="block-time">1:15 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study on Campus</div><div class="block-sub">1:15 – 3:30 PM · Library / self-study</div></div></div>
+    <div class="block class-t"><div class="block-time">3:30 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Database Systems</div><div class="block-sub">3:30 – 4:45 PM · CC230 · Dr. Arfan Arshad · SDT-317</div></div></div>
+    <div class="block prayer"><div class="block-time">4:22 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Asr Prayer</div><div class="block-sub">Offer after class at 4:45 PM</div></div></div>
+    <div class="block class-t"><div class="block-time">5:00 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Professional Practices</div><div class="block-sub">5:00 – 6:15 PM · HU201 · Dr. Iqbal Mehmood · SST1-705A</div></div></div>
+    <div class="block prayer"><div class="block-time">6:02 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Maghrib Prayer</div><div class="block-sub">Offer after class at 6:15 PM</div></div></div>
+    <div class="block meal"><div class="block-time">6:30 PM</div><div class="block-dot"></div><span class="block-icon">🍛</span><div class="block-content"><div class="block-title">Dinner</div><div class="block-sub">6:30 – 7:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">7:23 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Isha Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">7:40 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Evening Study</div><div class="block-sub">7:40 – 9:15 PM · Review today's classes</div></div></div>
+    <div class="block sleep"><div class="block-time">9:30 PM</div><div class="block-dot"></div><span class="block-icon">🌙</span><div class="block-content"><div class="block-title">Sleep</div><div class="block-sub">9:30 PM – 4:00 AM</div></div></div>
+  </div>
+</div>
+
+<!-- ========== WEDNESDAY ========== -->
+<div class="day-view" id="wednesday">
+  <div class="day-summary">
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Wake 4:00 AM</span>
+    <span class="summary-chip" style="background:var(--prayer-bg);color:var(--prayer)">5 Prayers</span>
+    <span class="summary-chip" style="background:var(--class-bg);color:var(--class)">2 Theory</span>
+    <span class="summary-chip" style="background:var(--study-bg);color:var(--study)">Good Study Day</span>
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Sleep 9:30 PM</span>
+  </div>
+  <div class="timeline">
+    <div class="block sleep"><div class="block-time">4:00 AM</div><div class="block-dot"></div><span class="block-icon">⏰</span><div class="block-content"><div class="block-title">Wake Up</div><div class="block-sub">Freshen up</div></div></div>
+    <div class="block meal"><div class="block-time">4:15 AM</div><div class="block-dot"></div><span class="block-icon">🍳</span><div class="block-content"><div class="block-title">Breakfast</div><div class="block-sub">4:15 – 4:45 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">5:07 AM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Fajr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">5:25 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Morning Study</div><div class="block-sub">5:25 – 11:30 AM · Best long study block of the week</div></div></div>
+    <div class="block free"><div class="block-time">11:30 AM</div><div class="block-dot"></div><span class="block-icon">🎒</span><div class="block-content"><div class="block-title">Get Ready & Commute</div><div class="block-sub">11:30 AM – 12:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">12:15 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Zuhr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block class-t"><div class="block-time">12:30 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Computer Networks</div><div class="block-sub">12:30 – 1:45 PM · CC251 · Sadia Abbas Shah</div></div></div>
+    <div class="block meal"><div class="block-time">1:45 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch</div><div class="block-sub">1:45 – 2:30 PM</div></div></div>
+    <div class="block study"><div class="block-time">2:30 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study on Campus</div><div class="block-sub">2:30 – 3:30 PM · CN revision / DB prep</div></div></div>
+    <div class="block class-t"><div class="block-time">3:30 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Database Systems</div><div class="block-sub">3:30 – 4:45 PM · CC230 · Dr. Arfan Arshad · SDT-317</div></div></div>
+    <div class="block prayer"><div class="block-time">4:22 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Asr Prayer</div><div class="block-sub">Offer after class at 4:45 PM</div></div></div>
+    <div class="block study"><div class="block-time">4:45 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study / Assignments</div><div class="block-sub">4:45 – 5:45 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">6:02 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Maghrib Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block meal"><div class="block-time">6:20 PM</div><div class="block-dot"></div><span class="block-icon">🍛</span><div class="block-content"><div class="block-title">Dinner</div><div class="block-sub">6:20 – 7:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">7:23 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Isha Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">7:40 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Evening Study</div><div class="block-sub">7:40 – 9:15 PM</div></div></div>
+    <div class="block sleep"><div class="block-time">9:30 PM</div><div class="block-dot"></div><span class="block-icon">🌙</span><div class="block-content"><div class="block-title">Sleep</div><div class="block-sub">9:30 PM – 4:00 AM</div></div></div>
+  </div>
+</div>
+
+<!-- ========== THURSDAY ========== -->
+<div class="day-view" id="thursday">
+  <div class="day-summary">
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Wake 4:00 AM</span>
+    <span class="summary-chip" style="background:var(--prayer-bg);color:var(--prayer)">5 Prayers</span>
+    <span class="summary-chip" style="background:var(--lab-bg);color:var(--lab)">2 Labs</span>
+    <span class="summary-chip" style="background:var(--class-bg);color:var(--class)">2 Theory</span>
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Sleep 9:30 PM</span>
+  </div>
+  <div class="timeline">
+    <div class="block sleep"><div class="block-time">4:00 AM</div><div class="block-dot"></div><span class="block-icon">⏰</span><div class="block-content"><div class="block-title">Wake Up</div><div class="block-sub">Freshen up</div></div></div>
+    <div class="block meal"><div class="block-time">4:15 AM</div><div class="block-dot"></div><span class="block-icon">🍳</span><div class="block-content"><div class="block-title">Breakfast</div><div class="block-sub">4:15 – 4:45 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">5:07 AM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Fajr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">5:25 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Morning Study</div><div class="block-sub">5:25 – 9:15 AM · SRE + COA prep</div></div></div>
+    <div class="block free"><div class="block-time">9:15 AM</div><div class="block-dot"></div><span class="block-icon">🎒</span><div class="block-content"><div class="block-title">Get Ready & Commute</div><div class="block-sub">9:15 – 9:30 AM</div></div></div>
+    <div class="block class-t"><div class="block-time">9:30 AM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Comp. Organization & Assembly</div><div class="block-sub">9:30 – 10:45 AM · CC222 · Dr. Aaqif Abbasi</div></div></div>
+    <div class="block study"><div class="block-time">11:00 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study / Campus Break</div><div class="block-sub">11:00 AM – 12:15 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">12:15 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Zuhr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block class-t"><div class="block-time">12:30 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Software Req. Engineering</div><div class="block-sub">12:30 – 1:45 PM · SE282 · Halima Jamil</div></div></div>
+    <div class="block meal"><div class="block-time">1:45 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch</div><div class="block-sub">1:45 – 2:00 PM</div></div></div>
+    <div class="block lab"><div class="block-time">2:00 PM</div><div class="block-dot"></div><span class="block-icon">🔬</span><div class="block-content"><div class="block-title">SRE Lab</div><div class="block-sub">2:00 – 3:15 PM · SE282L · M. Zubair Shafique</div></div></div>
+    <div class="block lab"><div class="block-time">3:30 PM</div><div class="block-dot"></div><span class="block-icon">🔬</span><div class="block-content"><div class="block-title">SRE Lab</div><div class="block-sub">3:30 – 4:45 PM · SE282L · M. Zubair Shafique</div></div></div>
+    <div class="block prayer"><div class="block-time">4:22 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Asr Prayer</div><div class="block-sub">Offer after lab at 4:45 PM</div></div></div>
+    <div class="block study"><div class="block-time">5:00 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study / Assignments</div><div class="block-sub">5:00 – 6:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">6:02 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Maghrib Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block meal"><div class="block-time">6:20 PM</div><div class="block-dot"></div><span class="block-icon">🍛</span><div class="block-content"><div class="block-title">Dinner</div><div class="block-sub">6:20 – 7:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">7:23 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Isha Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">7:40 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Evening Study</div><div class="block-sub">7:40 – 9:15 PM</div></div></div>
+    <div class="block sleep"><div class="block-time">9:30 PM</div><div class="block-dot"></div><span class="block-icon">🌙</span><div class="block-content"><div class="block-title">Sleep</div><div class="block-sub">9:30 PM – 4:00 AM</div></div></div>
+  </div>
+</div>
+
+<!-- ========== FRIDAY ========== -->
+<div class="day-view" id="friday">
+  <div class="day-summary">
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Wake 4:00 AM</span>
+    <span class="summary-chip" style="background:var(--prayer-bg);color:var(--prayer)">5 Prayers + Jumu'ah</span>
+    <span class="summary-chip" style="background:var(--lab-bg);color:var(--lab)">2 Labs</span>
+    <span class="summary-chip" style="background:var(--class-bg);color:var(--class)">2 Theory</span>
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Sleep 9:30 PM</span>
+  </div>
+  <div class="timeline">
+    <div class="block sleep"><div class="block-time">4:00 AM</div><div class="block-dot"></div><span class="block-icon">⏰</span><div class="block-content"><div class="block-title">Wake Up</div><div class="block-sub">Freshen up</div></div></div>
+    <div class="block meal"><div class="block-time">4:15 AM</div><div class="block-dot"></div><span class="block-icon">🍳</span><div class="block-content"><div class="block-title">Breakfast</div><div class="block-sub">4:15 – 4:45 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">5:07 AM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Fajr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">5:25 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Morning Study</div><div class="block-sub">5:25 – 7:45 AM · COA lab prep</div></div></div>
+    <div class="block free"><div class="block-time">7:45 AM</div><div class="block-dot"></div><span class="block-icon">🎒</span><div class="block-content"><div class="block-title">Get Ready & Commute</div><div class="block-sub">7:45 – 8:00 AM</div></div></div>
+    <div class="block lab"><div class="block-time">8:00 AM</div><div class="block-dot"></div><span class="block-icon">⚙️</span><div class="block-content"><div class="block-title">COA Lab</div><div class="block-sub">8:00 – 9:15 AM · CC222L · Usama Husnain</div></div></div>
+    <div class="block lab"><div class="block-time">9:30 AM</div><div class="block-dot"></div><span class="block-icon">⚙️</span><div class="block-content"><div class="block-title">COA Lab</div><div class="block-sub">9:30 – 10:45 AM · CC222L · Usama Husnain</div></div></div>
+    <div class="block study"><div class="block-time">10:45 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study Break</div><div class="block-sub">10:45 – 11:00 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">12:15 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Jumu'ah (Friday Prayer)</div><div class="block-sub">~1 hr · Campus mosque or nearby</div></div></div>
+    <div class="block meal"><div class="block-time">1:15 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch</div><div class="block-sub">1:15 – 2:00 PM</div></div></div>
+    <div class="block class-t"><div class="block-time">2:00 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Computer Networks</div><div class="block-sub">2:00 – 3:15 PM · CC251 · Sadia Abbas Shah</div></div></div>
+    <div class="block prayer"><div class="block-time">4:22 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Asr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">4:00 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study Break</div><div class="block-sub">3:30 – 5:00 PM</div></div></div>
+    <div class="block class-t"><div class="block-time">5:00 PM</div><div class="block-dot"></div><span class="block-icon">📚</span><div class="block-content"><div class="block-title">Professional Practices</div><div class="block-sub">5:00 – 6:15 PM · HU201 · Dr. Iqbal Mehmood · SST1-705A</div></div></div>
+    <div class="block prayer"><div class="block-time">6:02 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Maghrib Prayer</div><div class="block-sub">Offer after class at 6:15 PM</div></div></div>
+    <div class="block meal"><div class="block-time">6:30 PM</div><div class="block-dot"></div><span class="block-icon">🍛</span><div class="block-content"><div class="block-title">Dinner</div><div class="block-sub">6:30 – 7:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">7:23 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Isha Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">7:40 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Weekly Review / Light Study</div><div class="block-sub">7:40 – 9:15 PM · Plan next week</div></div></div>
+    <div class="block sleep"><div class="block-time">9:30 PM</div><div class="block-dot"></div><span class="block-icon">🌙</span><div class="block-content"><div class="block-title">Sleep</div><div class="block-sub">9:30 PM – 4:00 AM</div></div></div>
+  </div>
+</div>
+
+<!-- ========== WEEKEND ========== -->
+<div class="day-view" id="weekend">
+  <div class="day-summary">
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Wake 4:00 AM</span>
+    <span class="summary-chip" style="background:var(--prayer-bg);color:var(--prayer)">5 Prayers</span>
+    <span class="summary-chip" style="background:var(--study-bg);color:var(--study)">Deep Study Day</span>
+    <span class="summary-chip" style="background:var(--free-bg);color:var(--free)">Rest & Recharge</span>
+    <span class="summary-chip" style="background:var(--sleep-bg);color:var(--sleep)">Sleep 9:30 PM</span>
+  </div>
+  <div class="timeline">
+    <div class="block sleep"><div class="block-time">4:00 AM</div><div class="block-dot"></div><span class="block-icon">⏰</span><div class="block-content"><div class="block-title">Wake Up</div><div class="block-sub">Freshen up · Tahajjud (optional)</div></div></div>
+    <div class="block meal"><div class="block-time">4:15 AM</div><div class="block-dot"></div><span class="block-icon">🍳</span><div class="block-content"><div class="block-title">Breakfast</div><div class="block-sub">4:15 – 4:45 AM</div></div></div>
+    <div class="block prayer"><div class="block-time">5:07 AM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Fajr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">5:25 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Deep Study Block 1</div><div class="block-sub">5:25 – 9:00 AM · Tough subjects: COA / DB</div></div></div>
+    <div class="block free"><div class="block-time">9:00 AM</div><div class="block-dot"></div><span class="block-icon">🌿</span><div class="block-content"><div class="block-title">Break / Walk / Relax</div><div class="block-sub">9:00 – 10:00 AM</div></div></div>
+    <div class="block study"><div class="block-time">10:00 AM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Deep Study Block 2</div><div class="block-sub">10:00 AM – 12:00 PM · Assignments / Projects</div></div></div>
+    <div class="block prayer"><div class="block-time">12:15 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Zuhr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block meal"><div class="block-time">12:30 PM</div><div class="block-dot"></div><span class="block-icon">🍽️</span><div class="block-content"><div class="block-title">Lunch</div><div class="block-sub">12:30 – 1:15 PM</div></div></div>
+    <div class="block free"><div class="block-time">1:15 PM</div><div class="block-dot"></div><span class="block-icon">😴</span><div class="block-content"><div class="block-title">Rest / Nap (Optional)</div><div class="block-sub">1:15 – 2:30 PM</div></div></div>
+    <div class="block study"><div class="block-time">2:30 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Study Block 3</div><div class="block-sub">2:30 – 4:15 PM · CN / SRE / Readings</div></div></div>
+    <div class="block prayer"><div class="block-time">4:22 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Asr Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block free"><div class="block-time">4:40 PM</div><div class="block-dot"></div><span class="block-icon">🎮</span><div class="block-content"><div class="block-title">Free Time / Hobbies</div><div class="block-sub">4:40 – 5:45 PM · Family time / recreation</div></div></div>
+    <div class="block prayer"><div class="block-time">6:02 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Maghrib Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block meal"><div class="block-time">6:20 PM</div><div class="block-dot"></div><span class="block-icon">🍛</span><div class="block-content"><div class="block-title">Dinner</div><div class="block-sub">6:20 – 7:00 PM</div></div></div>
+    <div class="block prayer"><div class="block-time">7:23 PM</div><div class="block-dot"></div><span class="block-icon">🕌</span><div class="block-content"><div class="block-title">Isha Prayer</div><div class="block-sub">~15 min</div></div></div>
+    <div class="block study"><div class="block-time">7:40 PM</div><div class="block-dot"></div><span class="block-icon">📖</span><div class="block-content"><div class="block-title">Light Review</div><div class="block-sub">7:40 – 9:15 PM · Flashcards / notes review</div></div></div>
+    <div class="block sleep"><div class="block-time">9:30 PM</div><div class="block-dot"></div><span class="block-icon">🌙</span><div class="block-content"><div class="block-title">Sleep</div><div class="block-sub">9:30 PM – 4:00 AM</div></div></div>
+  </div>
+</div>
+
+<script>
+function showDay(day, btn) {
+  document.querySelectorAll('.day-view').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(day).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
