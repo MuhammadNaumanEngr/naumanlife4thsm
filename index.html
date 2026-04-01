@@ -116,130 +116,189 @@ const TYPE = {
 };
 
 const DAYS = {
-  Monday: [
-    ['12:00–5:40 AM','Sleep','Sleep after dinner — ~7h rest','sleep'],
-    ['5:40 AM','Wake up + Fajr prayer','','wake'],
-    ['5:45–7:00 AM','Morning routine','Freshen up, light revision','free'],
-    ['7:00–7:50 AM','Breakfast','Early — lab starts at 8:00 AM','meal'],
-    ['8:00–9:15 AM','CC251L — Computer Networks Lab','Muhammad Faheem Subhani · SST1-308','class-l'],
-    ['9:15–9:30 AM','Short break / move','','free'],
-    ['9:30–10:45 AM','Study block — Networks review','Consolidate lab work just done','study'],
-    ['10:45 AM–12:00 PM','Study block — SRE prep','Read ahead for 12:30 class','study'],
-    ['12:00–12:30 PM','Lunch + Dhuhr prayer','Midday break — eat & pray together','meal'],
-    ['12:30–1:45 PM','SE282 — Software Req. Engineering','Halima Jamil · SST1-706A','class-t'],
-    ['1:45–2:00 PM','Short break / move','','free'],
-    ['2:00–3:15 PM','CC230L — Database Systems Lab','Sameer Ahmed · SST2-702','class-l'],
-    ['3:15–5:00 PM','Study block — DB + SRE review','Review both classes while fresh','study'],
-    ['5:00–6:15 PM','CC222 — Comp. Org. & Assembly Language','Dr. Aaqif Afzaal Abbasi · Theory','class-t'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Study — Assembly + Networks','Assignments, exercises, notes','study'],
-    ['9:00–9:15 PM','Isha prayer','','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-  Tuesday: [
-    ['12:00–5:40 AM','Sleep','','sleep'],
-    ['5:40 AM','Wake up + Fajr','','wake'],
-    ['5:45–8:00 AM','Morning routine','Freshen up','free'],
-    ['8:00 AM','Breakfast','','meal'],
-    ['8:15 AM–12:00 PM','Study block — DB Systems + Networks','Self-study, past papers, assignments','study'],
-    ['12:00–12:30 PM','Lunch + Dhuhr prayer','Midday break — eat & pray together','meal'],
-    ['12:30–3:15 PM','Study / light revision','Prep for evening classes','study'],
-    ['3:30–4:45 PM','CC230 — Database Systems','Dr. Arfan Arshad · SDT-317','class-t'],
-    ['5:00–6:15 PM','HU201 — Professional Practices','Dr. Iqbal Mehmood · SST1-705A','class-t'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Study — DB Systems + Prof. Practices','Review today\'s lectures','study'],
-    ['9:00–9:15 PM','Isha prayer','','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-  Wednesday: [
-    ['12:00–5:40 AM','Sleep','','sleep'],
-    ['5:40 AM','Wake up + Fajr','','wake'],
-    ['5:45–8:00 AM','Morning routine','','free'],
-    ['8:00 AM','Breakfast','','meal'],
-    ['8:15 AM–12:00 PM','Study block — Networks theory prep','Read ahead for Asma Arshad\'s class','study'],
-    ['12:00–12:30 PM','Lunch + Dhuhr prayer','Midday break — eat & pray together','meal'],
-    ['12:30–1:45 PM','Free / rest','','free'],
-    ['2:00–3:15 PM','CC251 — Computer Networks','Asma Arshad · SST2-1303','class-t'],
-    ['3:30–4:45 PM','CC230 — Database Systems','Dr. Arfan Arshad · SDT-317','class-t'],
-    ['4:45–6:15 PM','Asr prayer + break','','free'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Study — Networks + DB consolidation','Review both classes from today','study'],
-    ['9:00–9:15 PM','Isha prayer','','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-  Thursday: [
-    ['12:00–5:40 AM','Sleep','','sleep'],
-    ['5:40 AM','Wake up + Fajr','','wake'],
-    ['5:45–8:00 AM','Morning routine','','free'],
-    ['8:00 AM','Breakfast','','meal'],
-    ['8:15–9:15 AM','Study block — Assembly Language prep','Dr. Aaqif\'s class at 9:30','study'],
-    ['9:30–10:45 AM','CC222 — Comp. Org. & Assembly Language','Dr. Aaqif Afzaal Abbasi · Theory','class-t'],
-    ['10:45 AM–12:00 PM','Study / break','Review Assembly notes','free'],
-    ['12:00–12:30 PM','Lunch + Dhuhr prayer','Midday break — eat & pray together','meal'],
-    ['12:30–1:45 PM','SE282 — Software Req. Engineering','Halima Jamil · SST1-706A','class-t'],
-    ['1:45–2:00 PM','Short break / move','','free'],
-    ['2:00–3:15 PM','SE282L — SRE Lab','Muhammad Zubair Shafique · SST1-605','class-l'],
-    ['3:15–6:15 PM','Asr prayer + break / free time','','free'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Study — SRE + Assembly review','Assignments, practice problems','study'],
-    ['9:00–9:15 PM','Isha prayer','','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-  Friday: [
-    ['12:00–5:40 AM','Sleep','','sleep'],
-    ['5:40 AM','Wake up + Fajr','','wake'],
-    ['5:45–7:00 AM','Morning routine','','free'],
-    ['7:00–7:50 AM','Breakfast','Early — lab starts at 8:00 AM','meal'],
-    ['8:00–9:15 AM','CC222L — Assembly Language Lab','Usama Husnain · SST1-308','class-l'],
-    ['9:15–11:45 AM','Study block + Jumu\'ah prep','Review Assembly lab, then prepare','study'],
-    ['12:00–1:30 PM','Jumu\'ah prayer + lunch','Friday midday — pray & eat together','meal'],
-    ['1:30–4:45 PM','Study block — weekly revision','All subjects overview, pending assignments','study'],
-    ['5:00–6:15 PM','HU201 — Professional Practices','Dr. Iqbal Mehmood · SST1-705A','class-t'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Study / wrap up weekly work','','study'],
-    ['9:00–9:15 PM','Isha prayer','Friday wind-down','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-  Saturday: [
-    ['12:00–5:40 AM','Sleep','','sleep'],
-    ['5:40 AM','Wake up + Fajr','','wake'],
-    ['5:45–8:00 AM','Morning routine','','free'],
-    ['8:00 AM','Breakfast','','meal'],
-    ['8:15 AM–12:00 PM','Study block — Networks + DB deep dive','Prepare for upcoming labs','study'],
-    ['12:00–12:30 PM','Lunch + Dhuhr prayer','Midday break — eat & pray together','meal'],
-    ['12:30–2:00 PM','Break / rest','','free'],
-    ['2:00–3:15 PM','CC251 — Computer Networks','Asma Arshad · SST2-1303','class-t'],
-    ['3:15–6:15 PM','Asr prayer + break / free time','','free'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Study — plan for coming week','Review notes, organise tasks','study'],
-    ['9:00–9:15 PM','Isha prayer','','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-  Sunday: [
-    ['12:00–5:40 AM','Sleep','','sleep'],
-    ['5:40 AM','Wake up + Fajr','','wake'],
-    ['5:45–8:00 AM','Morning routine','Rest day — no classes','free'],
-    ['8:00 AM','Breakfast','','meal'],
-    ['8:15–11:00 AM','Light revision + weekly planning','Plan assignments and deadlines','study'],
-    ['11:00 AM–12:00 PM','Break / exercise','Walk, stretch — physical health matters','free'],
-    ['12:00–12:30 PM','Lunch + Dhuhr prayer','Midday break — eat & pray together','meal'],
-    ['12:30–3:00 PM','Rest / nap / family time','Fully recharge','free'],
-    ['3:00–5:00 PM','Catch-up study — weakest subject','Assembly Language or DB focus','study'],
-    ['5:00–6:15 PM','Asr prayer + break','','free'],
-    ['6:15–6:30 PM','Maghrib prayer','','meal'],
-    ['6:30–9:00 PM','Prep for Monday','Networks lab prep + SRE reading','study'],
-    ['9:00–9:15 PM','Isha prayer','','meal'],
-    ['9:15–11:30 PM','Self-learning / personal projects','After-Isha learning block','study'],
-    ['11:30 PM–12:00 AM','Dinner + wind down','Eat after learning, then sleep','meal'],
-  ],
-};
 
+Monday: [
+['12:00–5:40 AM','Sleep','Sleep after dinner — ~7h rest','sleep'],
+['5:40 AM','Wake up + Fajr prayer','','wake'],
+['5:45–7:00 AM','Morning routine','Freshen up, light revision','free'],
+['7:00–7:50 AM','Breakfast','','meal'],
+
+['8:00–9:15 AM','CC251L — Computer Networks Lab','Muhammad Faheem Subhani · SST1-308','class-l'],
+['9:30–10:45 AM','CC251L — Computer Networks Lab','Muhammad Faheem Subhani · SST1-308','class-l'],
+
+['10:45–12:00 PM','Study block — SRE prep','','study'],
+
+['12:00–12:30 PM','Lunch + Dhuhr prayer','','meal'],
+
+['12:30–1:45 PM','SE282 — Software Requirement Engineering','Halima Jamil · SST1-706A','class-t'],
+
+['2:00–3:15 PM','CC230L — Database Systems Lab','Sameer Ahmed · SST2-702','class-l'],
+['3:30–4:45 PM','CC230L — Database Systems Lab','Sameer Ahmed · SST2-702','class-l'],
+
+['5:00–6:15 PM','CC222 — Computer Organization & Assembly Language','Dr. Aaqif Afzaal Abbasi','class-t'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+['6:30–9:00 PM','Study — Assembly + Networks','','study'],
+['9:00–9:15 PM','Isha prayer','','meal'],
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+],
+
+
+Tuesday: [
+['12:00–5:40 AM','Sleep','','sleep'],
+['5:40 AM','Wake up + Fajr','','wake'],
+['5:45–8:00 AM','Morning routine','','free'],
+['8:00 AM','Breakfast','','meal'],
+
+['8:15 AM–12:00 PM','Study block — DB Systems + Networks','','study'],
+
+['12:00–12:30 PM','Lunch + Dhuhr prayer','','meal'],
+
+['12:30–3:15 PM','Study / light revision','','study'],
+
+['3:30–4:45 PM','CC230 — Database Systems','Dr. Arfan Arshad · SDT-317','class-t'],
+['5:00–6:15 PM','HU201 — Professional Practices','Dr. Iqbal Mehmood · SST1-705A','class-t'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+['6:30–9:00 PM','Study — DB Systems + Prof. Practices','','study'],
+['9:00–9:15 PM','Isha prayer','','meal'],
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+],
+
+
+Wednesday: [
+['12:00–5:40 AM','Sleep','','sleep'],
+['5:40 AM','Wake up + Fajr','','wake'],
+['5:45–8:00 AM','Morning routine','','free'],
+['8:00 AM','Breakfast','','meal'],
+
+['8:15 AM–12:00 PM','Study block — Networks theory prep','','study'],
+
+['12:00–12:30 PM','Lunch + Dhuhr prayer','','meal'],
+['12:30–1:45 PM','Free / rest','','free'],
+
+['2:00–3:15 PM','CC251 — Computer Networks','Asma Arshad · SST2-1303','class-t'],
+['3:30–4:45 PM','CC230 — Database Systems','Dr. Arfan Arshad · SDT-317','class-t'],
+
+['4:45–6:15 PM','Asr prayer + break','','free'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+['6:30–9:00 PM','Study — Networks + DB consolidation','','study'],
+['9:00–9:15 PM','Isha prayer','','meal'],
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+],
+
+
+Thursday: [
+['12:00–5:40 AM','Sleep','','sleep'],
+['5:40 AM','Wake up + Fajr','','wake'],
+['5:45–8:00 AM','Morning routine','','free'],
+['8:00 AM','Breakfast','','meal'],
+
+['8:15–9:15 AM','Study block — Assembly prep','','study'],
+
+['9:30–10:45 AM','CC222 — Computer Organization & Assembly Language','Dr. Aaqif Afzaal Abbasi','class-t'],
+
+['10:45–12:00 PM','Study / break','','free'],
+
+['12:00–12:30 PM','Lunch + Dhuhr prayer','','meal'],
+
+['12:30–1:45 PM','SE282 — Software Requirement Engineering','Halima Jamil · SST1-706A','class-t'],
+
+['2:00–3:15 PM','SE282L — Software Requirement Engineering Lab','Muhammad Zubair Shafique · SST1-605','class-l'],
+['3:30–4:45 PM','SE282L — Software Requirement Engineering Lab','Muhammad Zubair Shafique · SST1-605','class-l'],
+
+['4:45–6:15 PM','Asr prayer + break','','free'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+['6:30–9:00 PM','Study — SRE + Assembly review','','study'],
+['9:00–9:15 PM','Isha prayer','','meal'],
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+],
+
+
+Friday: [
+['12:00–5:40 AM','Sleep','','sleep'],
+['5:40 AM','Wake up + Fajr','','wake'],
+['5:45–7:00 AM','Morning routine','','free'],
+['7:00–7:50 AM','Breakfast','','meal'],
+
+['8:00–9:15 AM','CC222L — Assembly Language Lab','Usama Husnain · SST1-308','class-l'],
+['9:30–10:45 AM','CC222L — Assembly Language Lab','Usama Husnain · SST1-308','class-l'],
+
+['10:45–11:45 AM','Study block + Jumu\'ah prep','','study'],
+
+['12:00–1:30 PM','Jumu\'ah prayer + lunch','','meal'],
+
+['1:30–4:45 PM','Study block — weekly revision','','study'],
+
+['5:00–6:15 PM','HU201 — Professional Practices','Dr. Iqbal Mehmood · SST1-705A','class-t'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+['6:30–9:00 PM','Study / wrap up weekly work','','study'],
+['9:00–9:15 PM','Isha prayer','','meal'],
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+],
+
+
+Saturday: [
+['12:00–5:40 AM','Sleep','','sleep'],
+['5:40 AM','Wake up + Fajr','','wake'],
+['5:45–8:00 AM','Morning routine','','free'],
+['8:00 AM','Breakfast','','meal'],
+
+['8:15 AM–12:00 PM','Study block — Networks + DB deep dive','','study'],
+
+['12:00–12:30 PM','Lunch + Dhuhr prayer','','meal'],
+['12:30–2:00 PM','Break / rest','','free'],
+
+['2:00–3:15 PM','CC251 — Computer Networks','Asma Arshad · SST2-1303','class-t'],
+
+['3:15–6:15 PM','Asr prayer + break','','free'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+['6:30–9:00 PM','Study — plan for coming week','','study'],
+['9:00–9:15 PM','Isha prayer','','meal'],
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+],
+
+
+Sunday: [
+['12:00–5:40 AM','Sleep','','sleep'],
+['5:40 AM','Wake up + Fajr','','wake'],
+['5:45–8:00 AM','Morning routine','Rest day','free'],
+['8:00 AM','Breakfast','','meal'],
+
+['8:15–11:00 AM','Light revision + weekly planning','','study'],
+
+['11:00 AM–12:00 PM','Break / exercise','','free'],
+
+['12:00–12:30 PM','Lunch + Dhuhr prayer','','meal'],
+
+['12:30–3:00 PM','Rest / family time','','free'],
+
+['3:00–5:00 PM','Catch-up study — weakest subject','','study'],
+
+['5:00–6:15 PM','Asr prayer + break','','free'],
+
+['6:15–6:30 PM','Maghrib prayer','','meal'],
+
+['6:30–9:00 PM','Prep for Monday','','study'],
+
+['9:00–9:15 PM','Isha prayer','','meal'],
+
+['9:15–11:30 PM','Self-learning / personal projects','','study'],
+
+['11:30 PM–12:00 AM','Dinner + wind down','','meal'],
+]
+
+};
 const dayNames = Object.keys(DAYS);
 const tabsEl   = document.getElementById('tabs');
 const panelsEl = document.getElementById('panels');
